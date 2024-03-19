@@ -488,19 +488,21 @@ def imagebind_huge(pretrained=False):
         audio_drop_path=0.1,
         imu_drop_path=0.7,
     )
-
+    cache_dir = torch.hub.get_dir()
+    ckpt_path = os.path.join(cache_dir, "imagebind", "imagebind_huge.pth")
+    os.makedirs(os.path.dirname(ckpt_path), exist_ok=True)
     if pretrained:
-        if not os.path.exists(".checkpoints/imagebind_huge.pth"):
+        if not os.path.exists(ckpt_path):
             print(
-                "Downloading imagebind weights to .checkpoints/imagebind_huge.pth ..."
+                f"Downloading imagebind weights to {ckpt_path} ..."
             )
-            os.makedirs(".checkpoints", exist_ok=True)
             torch.hub.download_url_to_file(
                 "https://dl.fbaipublicfiles.com/imagebind/imagebind_huge.pth",
-                ".checkpoints/imagebind_huge.pth",
+                ckpt_path,
+                # ".checkpoints/imagebind_huge.pth",
                 progress=True,
             )
 
-        model.load_state_dict(torch.load(".checkpoints/imagebind_huge.pth"))
+        model.load_state_dict(torch.load(ckpt_path))
 
     return model
